@@ -148,6 +148,21 @@ class ProfileController extends Controller
             default => 'Bronze',
         };
 
+        // Fetch Achievements
+        $achievements = $user->achievements()
+            ->select('achievements.*', 'user_achievements.unlocked_at')
+            ->orderBy('user_achievements.unlocked_at', 'desc')
+            ->get()
+            ->map(function ($achievement) {
+                return [
+                    'id' => $achievement->id,
+                    'name' => $achievement->name,
+                    'description' => $achievement->description,
+                    'icon' => $achievement->icon,
+                    'unlocked_at' => \Carbon\Carbon::parse($achievement->pivot->unlocked_at)->diffForHumans(),
+                ];
+            });
+
         return Inertia::render('Profile/Public', [
             'profile' => [
                 'id' => $user->id,
@@ -163,6 +178,7 @@ class ProfileController extends Controller
                 'rank_title' => $tierTitle,
             ],
             'history' => $history,
+            'achievements' => $achievements,
         ])->withViewData([
             'meta' => [
                 'title' => "{$user->name}'s Profile | Quizz",

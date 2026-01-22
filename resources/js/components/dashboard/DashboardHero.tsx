@@ -114,7 +114,7 @@ export default function DashboardHero({ user, rank }: DashboardHeroProps) {
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-transparent"></div>
                 </div>
             </div>
-            <div className="group relative col-span-1 flex min-h-[300px] flex-col justify-center overflow-hidden rounded-3xl shadow-2xl md:col-span-2">
+            <div className="group relative col-span-1 flex min-h-[260px] md:min-h-[300px] flex-col justify-center overflow-hidden rounded-3xl shadow-2xl md:col-span-2">
                 {/* Background Image */}
                 <div className="absolute inset-0">
                     <img
@@ -125,17 +125,18 @@ export default function DashboardHero({ user, rank }: DashboardHeroProps) {
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-transparent"></div>
                 </div>
 
-                <div className="relative z-10 p-8">
-                    <h2 className="mb-4 text-4xl font-black tracking-tight text-white uppercase italic">{t('Ready to compete?')}</h2>
-                    <p className="mb-8 max-w-lg text-lg leading-relaxed font-medium text-gray-200 drop-shadow-md">
+                <div className="relative z-10 p-6 sm:p-8">
+                    <h2 className="mb-3 text-3xl font-black tracking-tighter text-white sm:text-4xl uppercase italic drop-shadow-lg">{t('Ready to compete?')}</h2>
+                    <p className="mb-8 max-w-lg text-base sm:text-lg leading-relaxed font-medium text-gray-200 drop-shadow-md">
                         {t('Challenge players worldwide in real-time 1v1 battles. Climb the leaderboard and prove your knowledge.')}
                     </p>
                     <Link
                         href="/lobby"
-                        className="inline-flex transform items-center rounded-xl border border-indigo-400/20 bg-gradient-to-r from-indigo-600 to-blue-600 px-8 py-4 font-black text-white shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-1 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/50"
+                        className="group/btn relative w-full sm:w-auto inline-flex overflow-hidden transform items-center justify-center rounded-2xl border border-indigo-400/20 bg-gradient-to-r from-indigo-600 to-blue-600 px-8 py-4 font-black text-white shadow-xl shadow-indigo-500/30 transition-all hover:-translate-y-1 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/50"
                     >
+                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></span>
                         <span className="mr-3 text-xl">⚔️</span>
-                        {t('Enter Battle Arena')}
+                        <span className="uppercase tracking-wider">{t('Enter Battle Arena')}</span>
                     </Link>
                 </div>
             </div>

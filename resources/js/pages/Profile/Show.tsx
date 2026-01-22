@@ -1,5 +1,6 @@
 import { Head, useForm, usePage, router } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Zap, Trophy, XCircle, Activity } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import BottomNav from '../../components/BottomNav';
@@ -80,7 +81,7 @@ export default function Profile({ status, history, stats }: { status?: string, h
 
             <div className="relative pb-20">
                 {/* Hero / Header Section */}
-                <div className="relative overflow-hidden bg-white pb-10 pt-24 shadow-sm dark:bg-slate-900">
+                <div className="relative overflow-hidden bg-white pb-5 pt-10 shadow-sm dark:bg-slate-900">
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 blur-3xl opacity-50 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20" />
 
                     <div className="relative mx-auto flex max-w-lg flex-col items-center px-4 text-center">
@@ -169,23 +170,35 @@ export default function Profile({ status, history, stats }: { status?: string, h
                                 {stats && (
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="col-span-2 overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-5 text-white shadow-lg shadow-blue-500/20">
-                                            <div className="text-xs font-bold uppercase tracking-wider text-blue-100">{t('Total Points')}</div>
+                                            <div className="flex items-center justify-between">
+                                                <div className="text-xs font-bold uppercase tracking-wider text-blue-100">{t('Total Points')}</div>
+                                                <Zap className="h-5 w-5 text-blue-200" />
+                                            </div>
                                             <div className="mt-1 flex items-baseline gap-2">
                                                 <span className="text-4xl font-black">{stats.points}</span>
                                                 <span className="text-sm font-medium text-blue-200">pts</span>
                                             </div>
                                         </div>
                                         <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-slate-800">
-                                            <div className="text-xs font-bold uppercase text-slate-400">{t('Wins')}</div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <Trophy className="h-4 w-4 text-slate-400" />
+                                                <div className="text-xs font-bold uppercase text-slate-400">{t('Wins')}</div>
+                                            </div>
                                             <div className="mt-1 text-2xl font-black text-green-500">{stats.wins}</div>
                                         </div>
                                         <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-slate-800">
-                                            <div className="text-xs font-bold uppercase text-slate-400">{t('Losses')}</div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <XCircle className="h-4 w-4 text-slate-400" />
+                                                <div className="text-xs font-bold uppercase text-slate-400">{t('Losses')}</div>
+                                            </div>
                                             <div className="mt-1 text-2xl font-black text-red-500">{stats.losses}</div>
                                         </div>
                                         <div className="col-span-2 rounded-2xl bg-white p-4 shadow-sm dark:bg-slate-800">
                                             <div className="flex items-center justify-between">
-                                                <div className="text-xs font-bold uppercase text-slate-400">{t('Win Rate')}</div>
+                                                <div className="flex items-center gap-2">
+                                                    <Activity className="h-4 w-4 text-slate-400" />
+                                                    <div className="text-xs font-bold uppercase text-slate-400">{t('Win Rate')}</div>
+                                                </div>
                                                 <div className="text-xl font-black text-slate-800 dark:text-white">
                                                     {stats.total_games > 0
                                                         ? Math.round((stats.wins / stats.total_games) * 100)

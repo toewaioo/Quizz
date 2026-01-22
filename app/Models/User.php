@@ -32,6 +32,13 @@ class User extends Authenticatable
         return $this->hasMany(QuizMatch::class, 'player1_id')->orWhere('player2_id', $this->id);
     }
 
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+            ->withPivot('unlocked_at')
+            ->withTimestamps();
+    }
+
     /**
      * The attributes that are mass assignable.
      *

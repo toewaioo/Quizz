@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\Log;
 class GameStateService
 {
     protected $ablyService;
+    protected $achievementService;
 
-    public function __construct(AblyService $ablyService)
+    public function __construct(AblyService $ablyService, AchievementService $achievementService)
     {
         $this->ablyService = $ablyService;
+        $this->achievementService = $achievementService;
     }
 
     public function startGame(QuizMatch $match)
@@ -291,6 +293,10 @@ class GameStateService
         if ($winnerId) {
             User::where('id', $winnerId)->increment('points', 30); // Win Bonus
             User::where('id', $winnerId)->increment('wins', 1);
+            
+            // Check Achievements
+            $winner = User::find($winnerId);
+            $this->achievementService->checkAchievements($winner, 'wins', $winner->wins);
             
             $loserId = ($winnerId == $match->player1_id) ? $match->player2_id : $match->player1_id;
             if ($loserId) {
