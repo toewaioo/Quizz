@@ -9,9 +9,12 @@ interface GameOverDisplayProps {
     opponentScore: number;
     isWinner: boolean;
     isDraw: boolean;
+    onRequestRematch?: () => void;
+    rematchRequested?: boolean;
+    rematchByOpponent?: boolean;
 }
 
-const GameOverDisplay = memo(({ user, opponent, score, opponentScore, isWinner, isDraw }: GameOverDisplayProps) => {
+const GameOverDisplay = memo(({ user, opponent, score, opponentScore, isWinner, isDraw, onRequestRematch, rematchRequested, rematchByOpponent }: GameOverDisplayProps) => {
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -94,18 +97,30 @@ const GameOverDisplay = memo(({ user, opponent, score, opponentScore, isWinner, 
 
             <div className="flex w-full max-w-sm flex-col gap-3">
                 {/* Rematch Section */}
-                {!isDraw && (
+                {/* Check if opponent wants rematch */}
+                {rematchByOpponent && !rematchRequested && (
+                    <div className="mb-2 animate-bounce text-sm font-bold text-yellow-400">
+                        {t('Opponent wants a rematch!')}
+                    </div>
+                )}
+
+                {onRequestRematch && (
                     <button
-                        onClick={() => {
-                            // Call requestRematch from props
-                            // Note: We need to pass it down from Arena component -> GameOverDisplay
-                            // Check if requestRematch is available in props
-                            // Actually, looking at Arena component, we need to pass it.
-                            // For now, let's fix the prop drilling first in Arena component text.
-                        }}
-                        className="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-violet-600 px-6 py-4 font-bold text-white shadow-xl shadow-violet-600/30 transition-all hover:scale-[1.02] hover:bg-violet-500"
+                        onClick={onRequestRematch}
+                        disabled={rematchRequested}
+                        className={`group relative flex w-full items-center justify-center overflow-hidden rounded-xl px-6 py-4 font-bold text-white shadow-xl transition-all ${rematchRequested
+                                ? 'cursor-not-allowed bg-slate-600 opacity-80'
+                                : 'bg-violet-600 shadow-violet-600/30 hover:scale-[1.02] hover:bg-violet-500'
+                            }`}
                     >
-                        <span className="relative z-10">{t('Rematch')}</span>
+                        {rematchRequested ? (
+                            <span className="relative z-10 flex items-center gap-2">
+                                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+                                {t('Waiting for opponent...')}
+                            </span>
+                        ) : (
+                            <span className="relative z-10">{t('Rematch')}</span>
+                        )}
                     </button>
                 )}
 

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -44,7 +46,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'nullable|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
         $user = User::create([
@@ -96,13 +98,25 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        if (RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {
+            $seconds = RateLimiter::availableIn($this->throttleKey($request));
+
+            return response()->json([
+                'message' => 'Too many login attempts. Please try again in ' . $seconds . ' seconds.',
+            ], 429);
+        }
+
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
+            RateLimiter::hit($this->throttleKey($request));
+            
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials do not match our records.'],
             ]);
         }
+        
+        RateLimiter::clear($this->throttleKey($request));
 
         $token = $user->createToken('api-token')->plainTextToken;
 
@@ -111,6 +125,11 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token,
         ]);
+    }
+    
+    protected function throttleKey(Request $request): string
+    {
+        return Str::transliterate(Str::lower($request->input('email')).'|'.$request->ip());
     }
 
     /**

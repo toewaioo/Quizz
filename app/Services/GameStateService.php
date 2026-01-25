@@ -322,4 +322,76 @@ class GameStateService
             ]
         );
     }
+
+    public function requestRematch($matchId, $userId)
+    {
+        $match = QuizMatch::findOrFail($matchId);
+        
+        // Use Redis Set to store who requested
+        // Key: quiz_matches:{id}:rematch_requests
+        $key = "quiz_matches:{$matchId}:rematch_requests";
+        
+        \Illuminate\Support\Facades\Redis::sadd($key, $userId);
+        \Illuminate\Support\Facades\Redis::expire($key, 300); // 5 mins expiry
+        
+        // Notify other player
+        $this->ablyService->publish(
+            "match:{$match->channel_id}",
+            'match:rematch_requested',
+            ['requested_by' => $userId]
+        );
+        
+        // Check if we have 2 requests
+        $count = \Illuminate\Support\Facades\Redis::scard($key);
+        
+        if ($count >= 2) {
+             $this->initiateRematch($match);
+        }
+    }
+    
+    protected function initiateRematch(QuizMatch $oldMatch)
+    {
+        // Swap players or keep same? Usually keep same but reset.
+        // Or create NEW match record
+        
+        $newMatch = QuizMatch::create([
+            'player1_id' => $oldMatch->player1_id,
+            'player2_id' => $oldMatch->player2_id,
+            'status' => 'pending', 
+            'channel_id' => \Illuminate\Support\Str::uuid(),
+            'current_question_index' => 0,
+            'player_scores' => ['p1' => 0, 'p2' => 0],
+        ]);
+        
+        // Clear Redis key
+        \Illuminate\Support\Facades\Redis::del("quiz_matches:{$oldMatch->id}:rematch_requests");
+        
+        // Broadcast Ready
+        $this->ablyService->publish(
+            "match:{$oldMatch->channel_id}",
+            'match:rematch_ready',
+            [
+                'new_match_id' => $newMatch->id,
+                'channel_id' => $newMatch->channel_id
+            ]
+        );
+        
+        // Start the new game immediately? 
+        // Or wait for them to join 'active'?
+        // GameController usually handles start. 
+        // But since both are "in", we can auto-start or let them join.
+        // The frontend will redirect to /arena/{id}.
+        // The Arena component will load. 
+        // P1 is host. P1 will trigger "match:start"?? 
+        // Wait, normally `findMatch` -> `MatchmakingService` -> creates active match.
+        // Here we created 'pending'.
+        // We should probably set it to 'active' immediately since both are conceptually 'joined'.
+        
+        $newMatch->status = 'active';
+        $newMatch->save();
+        
+        // But we need to run 'startGame' logic (select questions etc).
+        // Let's call startGame here to prep it.
+        $this->startGame($newMatch);
+    }
 }

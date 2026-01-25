@@ -50,6 +50,7 @@ type Action =
     | { type: 'ROUND_RESULT'; payload: any }
     | { type: 'GAME_OVER'; payload: any }
     | { type: 'REMATCH_REQUESTED'; payload: { requested_by: number } }
+    | { type: 'PLAYER_REQUESTED_REMATCH' }
     | { type: 'REMATCH_READY'; payload: any };
 
 const initialState: State = {
@@ -142,6 +143,11 @@ function reducer(state: State, action: Action): State {
             return {
                 ...state,
                 rematchByOpponent: true, // We will dispatch this ONLY if it matches opponent
+            };
+        case 'PLAYER_REQUESTED_REMATCH':
+            return {
+                ...state,
+                rematchRequested: true,
             };
         case 'REMATCH_READY':
             // Redirect or reset?
@@ -280,6 +286,7 @@ export function useGameEngine(matchId: number, channelId: string, userId: number
     };
 
     const requestRematch = async () => {
+        dispatch({ type: 'PLAYER_REQUESTED_REMATCH' });
         try {
             await axios.post(`/match/${matchId}/rematch`);
         } catch (e) { console.error(e); }

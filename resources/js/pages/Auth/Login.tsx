@@ -41,12 +41,19 @@ export default function Login() {
 
                 <form onSubmit={submit} className="relative z-10 space-y-6">
                     {/* General Error Alert if exists (usually mapped to 'email' but good to have a prominent block) */}
-                    {errors.email && (
-                        <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-900/30 dark:bg-red-900/10 dark:text-red-400">
-                            <svg className="h-5 w-5 shrink-0 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                    {Object.keys(errors).length > 0 && (
+                        <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-900/30 dark:bg-red-900/10 dark:text-red-400">
+                            <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-500" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                             </svg>
-                            <span className="font-semibold">{errors.email}</span>
+                            <div className="flex flex-col gap-1">
+                                <span className="font-bold">Login Failed</span>
+                                <ul className="list-inside list-disc opacity-90">
+                                    {Object.values(errors).map((error: any, index) => (
+                                        <li key={index}>{error}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     )}
 

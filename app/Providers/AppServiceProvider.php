@@ -32,5 +32,13 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+
+        // \Illuminate\Validation\Rules\Password::defaults(function () {
+        //     return \Illuminate\Validation\Rules\Password::min(8)
+        //         ->mixedCase()
+        //         ->numbers()
+        //         ->symbols()
+        //         ->uncompromised();
+        // });
     }
 }

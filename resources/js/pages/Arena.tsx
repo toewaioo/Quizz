@@ -35,7 +35,7 @@ function Arena({ match }: { match: any }) {
     const isHost = Number(match.player1_id) === Number(user.id);
 
     // Use Game Engine Hook
-    const { state, startGame, submitAnswer, nextQuestion } = useGameEngine(match.id, match.channel_id, user.id, isHost);
+    const { state, startGame, submitAnswer, nextQuestion, requestRematch } = useGameEngine(match.id, match.channel_id, user.id, isHost);
 
     // Effective Opponent
     const opponent = state.opponent || initialOpponent;
@@ -147,7 +147,17 @@ function Arena({ match }: { match: any }) {
 
                 {/* Game Over State */}
                 {state.status === 'GAME_OVER' && (
-                    <GameOverDisplay user={user} opponent={opponent} score={score} opponentScore={opponentScore} isWinner={isWinner} isDraw={isDraw} />
+                    <GameOverDisplay
+                        user={user}
+                        opponent={opponent}
+                        score={score}
+                        opponentScore={opponentScore}
+                        isWinner={isWinner}
+                        isDraw={isDraw}
+                        onRequestRematch={state.rematchRequested ? undefined : requestRematch}
+                        rematchRequested={state.rematchRequested}
+                        rematchByOpponent={state.rematchByOpponent}
+                    />
                 )}
             </div>
         </div>

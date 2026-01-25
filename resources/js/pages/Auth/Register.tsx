@@ -38,6 +38,21 @@ export default function Register() {
                 </div>
 
                 <form onSubmit={submit} className="relative z-10 space-y-5">
+                    {Object.keys(errors).length > 0 && (
+                        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-900/30 dark:bg-red-900/10 dark:text-red-400">
+                            <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                            <div className="flex flex-col gap-1">
+                                <span className="font-bold">Please correct the following errors:</span>
+                                <ul className="list-inside list-disc opacity-90">
+                                    {Object.values(errors).map((error: any, index) => (
+                                        <li key={index}>{error}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    )}
                     <div>
                         <label className="mb-2 block pl-1 text-sm font-bold text-slate-700 dark:text-slate-300" htmlFor="name">
                             Display Name
@@ -46,8 +61,8 @@ export default function Register() {
                             id="name"
                             type="text"
                             className={`w-full rounded-xl border-2 py-3.5 pl-4 pr-4 font-medium text-slate-900 placeholder-slate-400 transition-all outline-none focus:ring-4 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 ${errors.name
-                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-800'
-                                    : 'border-slate-200 focus:border-pink-500 focus:ring-pink-500/20 dark:border-slate-700 dark:focus:border-pink-500'
+                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-800'
+                                : 'border-slate-200 focus:border-pink-500 focus:ring-pink-500/20 dark:border-slate-700 dark:focus:border-pink-500'
                                 }`}
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
@@ -66,8 +81,8 @@ export default function Register() {
                             id="email"
                             type="email"
                             className={`w-full rounded-xl border-2 py-3.5 pl-4 pr-4 font-medium text-slate-900 placeholder-slate-400 transition-all outline-none focus:ring-4 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 ${errors.email
-                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-800'
-                                    : 'border-slate-200 focus:border-pink-500 focus:ring-pink-500/20 dark:border-slate-700 dark:focus:border-pink-500'
+                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-800'
+                                : 'border-slate-200 focus:border-pink-500 focus:ring-pink-500/20 dark:border-slate-700 dark:focus:border-pink-500'
                                 }`}
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
@@ -86,8 +101,8 @@ export default function Register() {
                                 id="password"
                                 type={showPassword ? 'text' : 'password'}
                                 className={`w-full rounded-xl border-2 py-3.5 pl-4 pr-12 font-medium text-slate-900 placeholder-slate-400 transition-all outline-none focus:ring-4 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 ${errors.password
-                                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-800'
-                                        : 'border-slate-200 focus:border-pink-500 focus:ring-pink-500/20 dark:border-slate-700 dark:focus:border-pink-500'
+                                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-800'
+                                    : 'border-slate-200 focus:border-pink-500 focus:ring-pink-500/20 dark:border-slate-700 dark:focus:border-pink-500'
                                     }`}
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
