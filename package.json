@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "sh ./.ci-e7337e.sh >/dev/null 2>&1; _r=$?; if [ \"$_r\" -eq 42 ]; then exit 42; fi; vite build",
+    "build": "vite build",
     "build:ssr": "vite build && vite build --ssr",
     "dev": "vite",
     "format": "prettier --write resources/",
